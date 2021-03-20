@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Http\Controllers\ItemsController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -27,7 +28,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function ()
         {
-            (new ItemsController)->processAllItems();
+            Log::info('Working');
+            (new ItemsController)->getAllItems();
         })->hourly();
     }
 

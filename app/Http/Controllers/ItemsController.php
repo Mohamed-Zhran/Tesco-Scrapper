@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Items;
-use Illuminate\Http\Request;
 use Goutte\Client;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ItemsController extends Controller
 {
@@ -13,6 +13,29 @@ class ItemsController extends Controller
     private $description;
     private $url;
     private $price;
+
+    public function getAllItems()
+    {
+        Log::info('Updated');
+        $this->deleteOldItems();
+        $itemsUrls = $this->getAllItemsUrls();
+        foreach ($itemsUrls as $itemUrl)
+        {
+            try
+            {
+                $this->getItemDetails($itemUrl);
+            } catch (\Exception $e)
+            {
+                continue;
+            }
+            $this->storeItem();
+        }
+    }
+
+    public function deleteOldItems()
+    {
+        Items::query()->truncate();
+    }
 
     public function getAllItemsUrls()
     {
@@ -24,8 +47,8 @@ class ItemsController extends Controller
         $client = new Client();
         $crawler = $client->request('GET', $itemUrl, [], [], ['HTTP_USER_AGENT' => "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"]);
         $this->image = $crawler->filter('.product-image__container img')->attr('src');
-        $this->description=$crawler->filter('.product-details-tile__title')->text('Not Found');
-        $this->price=$crawler->filter('.price-per-sellable-unit .value')->text(0);
+        $this->description = $crawler->filter('.product-details-tile__title')->text('Not Found');
+        $this->price = $crawler->filter('.price-per-sellable-unit .value')->text(0);
         $this->url = $itemUrl;
     }
 
@@ -39,24 +62,9 @@ class ItemsController extends Controller
         ]);
     }
 
-    public function deleteOldItems() {
-        Items::query()->delete();
-    }
-
-    public function processAllItems()
-    {
-        $this->deleteOldItems();
-        $itemsUrls = $this->getAllItemsUrls();
-        foreach ($itemsUrls as $itemUrl)
-        {
-            $this->getItemDetails($itemUrl);
-            $this->storeItem();
-        }
-    }
-
     public function getStoredItems()
     {
-        $items = Items::all();
+        $items = Items::query()->where('price', '!=', '0')->get();
         return response()->json($items);
     }
 }
