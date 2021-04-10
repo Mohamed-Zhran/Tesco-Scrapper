@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemsController;
-
+use App\Http\Controllers\CurrencyExchangeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,3 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('getItems',[ItemsController::class, 'getStoredItems']);
+
+Route::get('getExchangeRates',[CurrencyExchangeController::class,'sendExchangeRates']);
