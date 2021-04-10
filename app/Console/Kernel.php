@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Http\Controllers\CurrencyExchangeController;
 use App\Http\Controllers\ItemsController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -28,9 +29,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function ()
         {
-            Log::info('Working');
+            (new CurrencyExchangeController())->start();
             (new ItemsController)->getAllItems();
-        })->hourly();
+        })->daily();
     }
 
     /**
