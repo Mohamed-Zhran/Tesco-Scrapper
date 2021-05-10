@@ -13,6 +13,11 @@ class ItemsController extends Controller
     private $description;
     private $url;
     private $price;
+    private $client;
+
+    public function __construct() {
+        $this->client=new Client();
+    }
 
     public function getAllItems()
     {
@@ -23,6 +28,7 @@ class ItemsController extends Controller
         {
             try
             {
+                print_r(get_resources());
                 $this->getItemDetails($itemUrl);
             } catch (\Exception $e)
             {
@@ -44,8 +50,8 @@ class ItemsController extends Controller
 
     public function getItemDetails($itemUrl)
     {
-        $client = new Client();
-        $crawler = $client->request('GET', $itemUrl, [], [], ['HTTP_USER_AGENT' => "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"]);
+
+        $crawler = $this->client->request('GET', $itemUrl, [], [], ['HTTP_USER_AGENT' => "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"]);
         $this->image = $crawler->filter('.product-image__container img')->attr('src');
         $this->description = $crawler->filter('.product-details-tile__title')->text('Not Found');
         $this->price = $crawler->filter('.price-per-sellable-unit .value')->text(0);
