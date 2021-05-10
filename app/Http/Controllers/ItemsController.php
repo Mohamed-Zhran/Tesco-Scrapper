@@ -28,7 +28,6 @@ class ItemsController extends Controller
         {
             try
             {
-                print_r(get_resources());
                 $this->getItemDetails($itemUrl);
             } catch (\Exception $e)
             {
