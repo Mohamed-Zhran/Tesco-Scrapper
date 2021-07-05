@@ -15,8 +15,9 @@ class ItemsController extends Controller
     private $price;
     private $client;
 
-    public function __construct() {
-        $this->client=new Client();
+    public function __construct()
+    {
+        $this->client = new Client();
     }
 
     public function getAllItems()
@@ -24,13 +25,10 @@ class ItemsController extends Controller
         Log::info('Updated');
         $this->deleteOldItems();
         $itemsUrls = $this->getAllItemsUrls();
-        foreach ($itemsUrls as $itemUrl)
-        {
-            try
-            {
+        foreach ($itemsUrls as $itemUrl) {
+            try {
                 $this->getItemDetails($itemUrl);
-            } catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 continue;
             }
             $this->storeItem();
@@ -49,8 +47,9 @@ class ItemsController extends Controller
 
     public function getItemDetails($itemUrl)
     {
-
-        $crawler = $this->client->request('GET', $itemUrl, [], [], ['HTTP_USER_AGENT' => "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"]);
+        $this->client->restart(); // removing all history and cookies from client to solve access denied problem
+        $crawler = $this->client->request('GET', $itemUrl, [], [], ['HTTP_USER_AGENT' => "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"]);
+        $test = $crawler->outerHtml();
         $this->image = $crawler->filter('.product-image__container img')->attr('src');
         $this->description = $crawler->filter('.product-details-tile__title')->text('Not Found');
         $this->price = $crawler->filter('.price-per-sellable-unit .value')->text(0);
