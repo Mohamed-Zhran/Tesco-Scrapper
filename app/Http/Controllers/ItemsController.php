@@ -49,7 +49,6 @@ class ItemsController extends Controller
     {
         $this->client->restart(); // removing all history and cookies from client to solve access denied problem
         $crawler = $this->client->request('GET', $itemUrl, [], [], ['HTTP_USER_AGENT' => "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"]);
-        $test = $crawler->outerHtml();
         $this->image = $crawler->filter('.product-image__container img')->attr('src');
         $this->description = $crawler->filter('.product-details-tile__title')->text('Not Found');
         $this->price = $crawler->filter('.price-per-sellable-unit .value')->text(0);
