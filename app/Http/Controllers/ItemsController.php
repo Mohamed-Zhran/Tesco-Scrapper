@@ -6,7 +6,6 @@ use App\Models\Items;
 use Goutte\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
 class ItemsController extends Controller
 {
     private $image;
@@ -67,7 +66,7 @@ class ItemsController extends Controller
 
     public function getStoredItems()
     {
-        $items = Items::query()->where('price', '!=', '0')->get();
+        $items = Items::query()->where('price', '!=', '0')->paginate(10);
         return response()->json($items);
     }
 }
