@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Items;
 use Goutte\Client;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+
 class ItemsController extends Controller
 {
     private $image;
@@ -21,7 +22,6 @@ class ItemsController extends Controller
 
     public function getAllItems()
     {
-        Log::info('Updated');
         $this->deleteOldItems();
         $itemsUrls = $this->getAllItemsUrls();
         foreach ($itemsUrls as $itemUrl) {
@@ -64,9 +64,9 @@ class ItemsController extends Controller
         ]);
     }
 
-    public function getStoredItems()
+    public function getStoredItems(Request $request)
     {
-        $items = Items::query()->where('price', '!=', '0')->paginate(10);
+        $items = Items::query()->where('price', '!=', '0')->where('description', 'LIKE', "%$request->search_query%")->paginate($request->per_page);
         return response()->json($items);
     }
 }
