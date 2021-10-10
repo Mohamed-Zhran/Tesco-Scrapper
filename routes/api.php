@@ -19,6 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('getItems',[ItemsController::class, 'getStoredItems']);
+Route::get('getItems', [ItemsController::class, 'getStoredItems']);
 
-Route::get('getExchangeRates',[CurrencyExchangeController::class,'sendExchangeRates']);
+Route::get('getExchangeRates', [CurrencyExchangeController::class, 'sendExchangeRates']);
